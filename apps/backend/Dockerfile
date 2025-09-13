@@ -1,46 +1,19 @@
-# Stage 1: Build the application
-# Use the official Node.js LTS (Long Term Support) image as the base image
-FROM node:22-alpine AS build
-ENV NODE_ENV=development
-
-# Set the working directory inside the container
+FROM node:22-alpine AS base
+RUN corepack enable
+COPY . /app
 WORKDIR /app
 
-# Copy package.json and yarn.lock to the container
-COPY package.json ./
-COPY yarn.lock ./
-COPY .yarnrc.yml ./
-COPY prisma ./prisma/
+FROM base AS prod-deps
+RUN pnpm install --prod --frozen-lockfile
 
-# Install the project dependencies using Yarn
-RUN corepack enable
-RUN yarn install
-
-# Copy the rest of the project files to the container
-COPY . .
-
-# Build the NestJS application
-RUN npx prisma generate
+FROM base AS build
+RUN pnpm install --frozen-lockfile
+RUN pnpm prisma generate
 RUN yarn build
 
-# Stage 2: Create a lightweight container with the built application
-FROM node:22-alpine AS production
+FROM base
 ENV NODE_ENV=production
-
-# Set the working directory inside the container
-WORKDIR /app
-
-# Copy the built application from the previous stage
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/yarn.lock ./yarn.lock
-COPY --from=build /app/.yarnrc.yml ./.yarnrc.yml
-COPY --from=build /app/prisma ./prisma
-
-# Install only production dependencies
-RUN corepack enable
-RUN yarn install --immutable
-RUN npx prisma generate
-
-# Command to run the application
-CMD ["npm", "run", "start:migrate:prod"]
+COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY --from=build /app/dist /app/dist
+EXPOSE 3001
+CMD ["pnpm", "run", "start:migrate:prod"]
