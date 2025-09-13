@@ -1,9 +1,7 @@
-import { HelloWorld } from '@/components/hello-world';
-
 export default function Home() {
   return (
     <main className='flex items-center justify-center'>
-      <HelloWorld className='mt-10' />
+      <h1 className='text-4xl font-medium tracking-tight lg:text-5xl font-heading'>Budavári Schönherz Stúdió</h1>
     </main>
   );
 }
