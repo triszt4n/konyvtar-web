@@ -12,6 +12,9 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "start:migrate:prod": "prisma migrate deploy && npm run start:prod",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
     "lint": "eslint src/**/*.ts",
     "db:seed": "prisma db seed"
   },
@@ -19,30 +22,30 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@nestjs/common": "^11.0.12",
-    "@nestjs/core": "^11.0.12",
-    "@nestjs/platform-express": "^11.0.12",
-    "@nestjs/swagger": "^11.1.0",
-    "@prisma/client": "^6.5.0",
-    "@scalar/nestjs-api-reference": "^0.4.3",
-    "nestjs-prisma": "^0.25.0",
-    "reflect-metadata": "^0.2.2",
-    "rimraf": "^6.0.1",
-    "rxjs": "^7.8.2"
+    "@nestjs/common": "11.1.6",
+    "@nestjs/core": "11.1.6",
+    "@nestjs/platform-express": "11.1.6",
+    "@nestjs/swagger": "11.2.0",
+    "@prisma/client": "6.16.1",
+    "@scalar/nestjs-api-reference": "0.4.16",
+    "nestjs-prisma": "0.25.0",
+    "reflect-metadata": "0.2.2",
+    "rimraf": "6.0.1",
+    "rxjs": "7.8.2"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.5",
-    "@nestjs/schematics": "^11.0.2",
-    "@types/express": "^5.0.1",
-    "@types/node": "^22.13.14",
-    "@typescript-eslint/eslint-plugin": "^8.28.0",
-    "@typescript-eslint/parser": "^8.28.0",
-    "eslint-config-nestjs": "^0.8.0",
-    "prisma": "^6.5.0",
-    "source-map-support": "^0.5.21",
-    "ts-loader": "^9.5.2",
-    "ts-node": "^10.9.2",
+    "@nestjs/cli": "11.0.10",
+    "@nestjs/schematics": "11.0.7",
+    "@types/express": "5.0.3",
+    "@types/node": "22.18.3",
+    "@typescript-eslint/eslint-plugin": "8.43.0",
+    "@typescript-eslint/parser": "8.43.0",
+    "eslint-config-nestjs": "0.8.0",
+    "prisma": "6.16.1",
+    "source-map-support": "0.5.21",
+    "ts-loader": "9.5.4",
+    "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
-    "typescript": "^5.8.2"
+    "typescript": "5.9.2"
   }
 }
