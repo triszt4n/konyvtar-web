@@ -9,7 +9,7 @@ RUN pnpm install --prod --frozen-lockfile
 FROM base AS build
 RUN pnpm install --frozen-lockfile
 RUN pnpm prisma generate
-RUN yarn build
+RUN pnpm build
 
 FROM base
 ENV NODE_ENV=production
