@@ -1,8 +1,6 @@
-# NestJS + NextJS Starter Project by Kir-Dev
+# Simonyi Könyvtár - Library Management System
 
-This is a starter project for a fullstack application using NestJS and NextJS.
-It includes a basic setup for a NestJS as backend and a NextJS as frontend,
-including shadcn/ui, ESLint, Prettier, and GitHub Actions.
+Based on the [NestJS + NextJS Starter](https://github.com/kir-dev/next-nest-template) project by by [Kir-Dev](https://kir-dev.hu) and on a Kir-Dev member's previous project [simonyi-konyvtar](https://github.com/OmTheTurtle/simonyi-konyvtar).
 
 ## Getting Started
 
@@ -10,6 +8,7 @@ including shadcn/ui, ESLint, Prettier, and GitHub Actions.
 
 - Node.js 22
 - Pnpm 10
+- Docker (for database)
 
 ### Installation
 
@@ -41,6 +40,23 @@ pnpm format
 
 ### Development
 
+Optionally if you have Docker installed, you can run a PostgreSQL database in a container.
+
+```bash
+cd apps/backend
+docker compose -f docker-compose.dev.yml up -d
+```
+
+Don't forget to set up your environment variables. You can copy the example files and modify them as needed.
+
+Also make sure Prisma is set up correctly.
+
+```bash
+cd apps/backend
+pnpx prisma generate
+pnpx prisma migrate dev
+```
+
 You can run the backend and frontend separately.
 
 ```bash
@@ -51,32 +67,27 @@ pnpm start:backend # Starts on http://localhost:3001
 pnpm start:frontend # Starts on http://localhost:3000
 ```
 
+#### AuthSCH
+
+todo.
+
+#### Seeding the Database
+
+todo.
+
+#### MinIO
+
+todo.
+
 ### After Development
 
-You can build the frontend and run the application.
+Deploy the frontend app on Vercel targeting the `apps/frontend` directory.
+
+The backend app can run on our VM, checkout the repo, set up environment variables, and run:
 
 ```bash
-pnpm build:frontend
-```
-
-Or build the backend.
-
-```bash
-pnpm build:backend
-```
-
-There are recommended GitHub Actions workflows for this setup, which will fail if one of the following commands fails:
-
-```bash
-pnpm lint
-```
-
-```bash
-pnpm format:check
-```
-
-```bash
-pnpm build:backend
+cd apps/backend
+docker compose up -d --build
 ```
 
 ## Happy Coding!

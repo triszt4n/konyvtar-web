@@ -2,11 +2,11 @@ import { Button } from './ui/button';
 
 export const Footer = () => {
   return (
-    <footer className='bg-[#031731] text-secondary-foreground flex flex-col items-center justify-center gap-6 px-4 py-8'>
+    <footer className='flex flex-col items-center justify-center gap-6 px-4 py-8'>
       <div className='flex flex-col text-center'>
         <div className='pb-2 text-3xl font-semibold tracking-tight'>Kapcsolat</div>
         <Button variant='link' size='lg' className='text-lg text-tertiary'>
-          <a href='mailto:info@bsstudio.hu'>info@bsstudio.hu</a>
+          <a href='mailto:konyvtar@simonyi.bme.hu'>konyvtar@simonyi.bme.hu</a>
         </Button>
       </div>
       <div className='flex flex-row gap-6'>

@@ -1,7 +1,7 @@
 'use client';
 
-import { createContext, PropsWithChildren } from 'react';
-import { useMe } from './use-me.hook';
+import { createContext, PropsWithChildren, useContext } from 'react';
+import { useMe } from '../hooks/use-me.hook';
 
 type AuthContextType = {
   authenticated: boolean;
@@ -16,11 +16,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const { data, isLoading } = useMe();
 
   const onLogin = async () => {
-    window.location.href = `${process.env.VITE_BACKEND_URL}/auth/login`;
+    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`;
   };
 
   const onLogout = async () => {
-    window.location.href = `${process.env.VITE_BACKEND_URL}/auth/logout`;
+    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`;
   };
 
   const value = {
@@ -31,4 +31,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }

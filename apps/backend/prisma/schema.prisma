@@ -18,14 +18,146 @@ model User {
   authSchId String   @unique
   fullName  String
   firstName String
-  email     String   @unique
+  email     String
+  imageUrl  String?
   role      UserRole @default(USER)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  imageUrl  String?
+
+  borrowingComments BorrowingComment[]
+  bookComments      BookComment[]
+  reports           Report[]
+  borrowings        Borrowing[]
+}
+
+model Book {
+  id              String  @id @default(cuid())
+  svieInventoryId String?
+
+  title     String
+  author    String
+  etoNumber Int
+  language  String
+  genre     Genre
+
+  isbnOrIssn  String?
+  publisher   String?
+  publishYear Int?
+  description String?
+  imageUrl    String?
+
+  stockCount Int?    @default(1) // Available count for borrowing
+  count      Int?    @default(1) // Total count including borrowed ones
+  borrowable Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shelfId String?
+  shelf   Shelf?  @relation(fields: [shelfId], references: [id])
+
+  comments   BookComment[]
+  borrowings BookToBorrowing[]
+}
+
+model BookToBorrowing {
+  id       String @id @default(cuid())
+  quantity Int?   @default(1)
+
+  bookId      String
+  books       Book      @relation(fields: [bookId], references: [id])
+  borrowingId String
+  borrowings  Borrowing @relation(fields: [borrowingId], references: [id])
+
+  @@unique([bookId, borrowingId], name: "BookToBorrowing_book_borrowing_unique")
+}
+
+model Borrowing {
+  id         String       @id @default(cuid())
+  returnDate DateTime?
+  status     OrderStatus? @default(PENDING)
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
+
+  userId   String
+  user     User               @relation(fields: [userId], references: [id])
+  books    BookToBorrowing[]
+  comments BorrowingComment[]
+}
+
+model Shelf {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  books Book[]
+}
+
+model BookComment {
+  id      String @id @default(cuid())
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  bookId String
+  book   Book   @relation(fields: [bookId], references: [id])
+}
+
+model BorrowingComment {
+  id      String @id @default(cuid())
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  borrowingId String
+  borrowing   Borrowing @relation(fields: [borrowingId], references: [id])
+}
+
+model Report {
+  id      String  @id @default(cuid())
+  reason  String
+  details String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 enum UserRole {
   USER
   ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  RENTED
+  RETURNED
+  LATE
+}
+
+enum Genre {
+  BOOK // könyv
+  JOURNAL // folyóirat
+  NEWSPAPER // újság
+  DISC // lemez
+  DICTIONARY // szótár
+  ENCYCLOPEDIA // enciklopédia
+  THESIS // szakdolgozat
+  BROCHURE // brosúra, kiadvány
+  OTHER // egyéb
 }

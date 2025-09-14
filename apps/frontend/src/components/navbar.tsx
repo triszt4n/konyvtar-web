@@ -1,7 +1,11 @@
-import { BookOpenText, Menu, Search } from 'lucide-react';
+'use client';
+
+import { BookOpenText, Menu } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useAuth } from '../hooks/use-auth.hook';
+import { usePathname } from 'next/navigation';
 import { useMe } from '../hooks/use-me.hook';
+import { useAuth } from './auth-provider';
 import { ModeToggle } from './mode-toggle';
 import { Button } from './ui/button';
 import {
@@ -12,30 +16,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { Input } from './ui/input';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
-import schLogo from '@/assets/logo-sch-easy.svg';
+const routesNavGroup = [
+  { navTitle: 'Adminisztráció', path: '/admin', visibleUnauthenticated: false },
+  { navTitle: 'Hibabejelentés', path: '/report', visibleUnauthenticated: false },
+];
 
 export const Navbar: React.FC = () => {
   const { authenticated, login, logout } = useAuth();
   const { data: me } = useMe();
+  const pathname = usePathname();
 
   return (
-    <header className='sticky shadow-md top-0 flex h-12 items-center gap-4 border-b bg-background px-4 md:px-6'>
+    <header className='sticky top-0 flex h-12 items-center gap-4 px-4 md:px-6'>
       <nav className='hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-4 md:text-sm lg:gap-8'>
-        <Link href='/' className='block w-20 lg:w-24'>
+        <Link href='/' className='flex w-20 lg:w-28 items-center'>
           <BookOpenText />
+          &nbsp;Könyvtár
         </Link>
-        {/* routesNavGroup.map((route) => (
-          <Link
-            key={route.path}
-            to={route.path ?? '/'}
-            className={`${route.path === currentHref ? 'text-tertiary dark:text-tertiary' : 'text-primary dark:text-foreground'} transition-colors hover:text-tertiary dark:hover:text-tertiary font-bold`}
-          >
-            {route.navTitle}
-          </Link>
-        )) */}
+        {routesNavGroup.map(
+          (route) =>
+            route.visibleUnauthenticated && (
+              <Link
+                key={route.path}
+                href={route.path ?? '/'}
+                className={`${route.path === pathname ? 'text-tertiary dark:text-tertiary' : 'text-primary dark:text-foreground'} transition-colors hover:text-tertiary dark:hover:text-tertiary font-bold`}
+              >
+                {route.navTitle}
+              </Link>
+            )
+        )}
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -46,32 +57,23 @@ export const Navbar: React.FC = () => {
         </SheetTrigger>
         <SheetContent side='left'>
           <nav className='grid gap-6 text-lg font-medium'>
-            <Link href='/' className='block w-32'>
+            <Link href='/' className='flex w-32 items-center'>
               <BookOpenText />
+              &nbsp;Könyvtár
             </Link>
-            {/* routesNavGroup.map((route) => (
+            {routesNavGroup.map((route) => (
               <Link
                 key={route.path}
-                to={route.path ?? '/'}
-                className={`${route.path === currentHref ? '' : 'text-muted-foreground'} hover:text-foreground`}
+                href={route.path ?? '/'}
+                className={`${route.path === pathname ? '' : 'text-muted-foreground'} hover:text-foreground`}
               >
                 {route.navTitle}
               </Link>
-            )) */}
+            ))}
           </nav>
         </SheetContent>
       </Sheet>
       <div className='flex w-full md:w-auto items-center gap-4 md:ml-auto md:gap-2'>
-        <form className='ml-auto flex-1 sm:flex-initial'>
-          <div className='relative'>
-            <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-primary dark:text-tertiary' />
-            <Input
-              type='search'
-              placeholder='Tartalom böngészése...'
-              className='pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]'
-            />
-          </div>
-        </form>
         <ModeToggle />
         {authenticated && (
           <DropdownMenu>
@@ -125,7 +127,7 @@ export const Navbar: React.FC = () => {
                 }}
               >
                 <div className='flex justify-between items-center'>
-                  <img src={schLogo} className='w-4 h-4 mr-2' alt='AuthSCH' />
+                  <Image src='/logo-sch-easy.svg' width={20} height={20} className='mr-2' alt='AuthSCH' />
                   <div>AuthSCH-val</div>
                 </div>
               </DropdownMenuItem>
